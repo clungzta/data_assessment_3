@@ -64,7 +64,7 @@ def fuzzy_match_and_combine(s, min_ratio=90):
 
     return s_filtered.map(lambda x: fuzzy_mapping[x] if (type(x) == str and (x in fuzzy_mapping)) else x)
 
-def load_dataset(path, selected_feature_names_categ, selected_feature_names_interval, shuffle=True, fuzzy_matching=True):
+def extract_features(path):
     # df_test = pd.read_csv('TestingSet_Random(1).csv')
     # df_test2 = pd.read_csv('TestingSet(2).csv')
     df = pd.read_csv(path)
@@ -115,8 +115,6 @@ def load_dataset(path, selected_feature_names_categ, selected_feature_names_inte
     df['decision_date_epoch'] = pd.to_datetime(df.decision_date, errors='coerce').astype(np.int64) // 10**9
     df['pw_determ_date_epoch'] = pd.to_datetime(df.pw_determ_date, errors='coerce').astype(np.int64) // 10**9
     df['pw_expire_date_epoch'] = pd.to_datetime(df.pw_expire_date, errors='coerce').astype(np.int64) // 10**9
-# pw_determ_date
-# pw_expire_date
 
     # colnames = ['naics_code']
     df['naics_code'][df['naics_us_code'].notnull()] = df['naics_us_code']
@@ -162,6 +160,10 @@ def load_dataset(path, selected_feature_names_categ, selected_feature_names_inte
 
     s = df.job_info_experience_num_months
     df['job_info_experience_num_months_str'] = s.map(lambda x: str(int(x)) if (type(x) == float and not(np.isnan(x))) else "EMPTY_PLACEHOLDER")
+
+    return df
+
+def load_dataset(path, selected_feature_names_categ, selected_feature_names_interval, shuffle=True, fuzzy_matching=True):
 
     features_to_use = []
     variable_types = []

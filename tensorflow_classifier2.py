@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, f1_score
 
 from colnames import *
-from load_dataset import load_dataset, split_categorical_and_interval
+from load_dataset import load_and_preprocess, extract_features, split_categorical_and_interval
 
 def prelu(_x, scope=None):
     """parametric ReLU activation"""
@@ -16,14 +16,17 @@ def prelu(_x, scope=None):
         return tf.maximum(0.0, _x) + _alpha * tf.minimum(0.0, _x)
 
 
-def train_and_test(training_epochs, selected_feature_names_categ, selected_feature_names_interval):
+def train_and_test(df, training_epochs, selected_feature_names_categ, selected_feature_names_interval):
+    scores = []
+    
     # Parameters
     learning_rate = 0.0001
     training_epochs = 80
     batch_size = 200
     display_step = 1
 
-    X, y, vocab_size, variable_types, features_to_use = load_dataset('TrainingSet(3).csv', selected_feature_names_categ, selected_feature_names_interval, fuzzy_matching=True)
+    # TODO: load and preprocess once. Run multiple times using same data
+    X, y, vocab_size, variable_types, features_to_use = extract_features(df, selected_feature_names_categ, selected_feature_names_interval, fuzzy_matching=True)
     # test_X, vocab_size, variable_types, features_to_use = load_dataset('TrainingSet(3).csv')
 
     train_X, test_X, train_y, test_y = train_test_split(X, y, test_size=0.15)
@@ -107,6 +110,8 @@ def train_and_test(training_epochs, selected_feature_names_categ, selected_featu
             target_names = ['class 0', 'certified', 'class 2', 'class 3']
             print(classification_report(test_y, y_pred, target_names=target_names))
 
+        return f1_score(test_y, y_pred, average='micro')
+
     # Define loss and optimizer
     # loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=multilayer_perceptron(X, 0.4), labels=Y))
     # Sparse softmax supports index labels ()
@@ -144,7 +149,7 @@ def train_and_test(training_epochs, selected_feature_names_categ, selected_featu
                 print("Epoch:", '%04d' % (epoch + 1), "cost={:.9f}".format(avg_cost))
 
             if epoch % (display_step*5) == 0:
-                test(sess)
+                scores.append(test(sess, report=True))
 
         print("Optimisation Finished!")
         # need to save the model 
@@ -155,7 +160,8 @@ def train_and_test(training_epochs, selected_feature_names_categ, selected_featu
         # accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
         
         # print("Accuracy:", accuracy.eval({X: test_X, Y: np_to_onehot(test_y)}))
-        return test(sess, report=True)
+        return max(scores)
 
 if __name__ == '__main__':
-    score = train_and_test(50, selected_feature_names_categ, selected_feature_names_interval)
+    df = load_and_preprocess('TrainingSet(3).csv')
+    score = train_and_test(df, 50, selected_feature_names_categ, selected_feature_names_interval)

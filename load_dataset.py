@@ -64,7 +64,7 @@ def fuzzy_match_and_combine(s, min_ratio=90):
 
     return s_filtered.map(lambda x: fuzzy_mapping[x] if (type(x) == str and (x in fuzzy_mapping)) else x)
 
-def extract_features(path):
+def load_and_preprocess(path, fuzzy_matching=True):
     # df_test = pd.read_csv('TestingSet_Random(1).csv')
     # df_test2 = pd.read_csv('TestingSet(2).csv')
     df = pd.read_csv(path)
@@ -163,7 +163,7 @@ def extract_features(path):
 
     return df
 
-def load_dataset(path, selected_feature_names_categ, selected_feature_names_interval, shuffle=True, fuzzy_matching=True):
+def extract_features(df, selected_feature_names_categ, selected_feature_names_interval, shuffle=True, fuzzy_matching=True):
 
     features_to_use = []
     variable_types = []

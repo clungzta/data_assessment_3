@@ -1,6 +1,6 @@
 #! /usr/bin/python
 # -*- coding: utf-8 -*-
-import os
+import os, sys
 import pickle
 import functools
 import itertools
@@ -36,7 +36,7 @@ def eval_fun(colnames, bits):
     pprint(colnames_categ_use)
     print('')
     pprint(colnames_numerical_use)
-    score = train_and_test(df, 1, colnames_categ_use, colnames_numerical_use)
+    score = train_and_test(df, int(sys.argv[1]), colnames_categ_use, colnames_numerical_use)
 
     if os.path.exists('checkpoints.pkl'):
         with open('checkpoints.pkl', 'rb') as flo:

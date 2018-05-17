@@ -21,7 +21,7 @@ def train_and_test(df, training_epochs, selected_feature_names_categ, selected_f
     
     # Parameters
     learning_rate = 0.0001
-    training_epochs = 80
+    #training_epochs = 80
     batch_size = 200
     display_step = 1
 

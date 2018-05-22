@@ -67,20 +67,12 @@ selected_feature_names_categ = [
     'ri_2nd_ad_newspaper_name'
 ]
 
-selected_feature_names_interval = [
-##         'wage_offer_from_9089',   
-        'naics_code',
-        'employer_num_employees',
-##         'employer_yr_estab',
-        'case_received_date_epoch',
-        'decision_date_epoch',
-        'pw_expire_date_epoch',
-        'pw_determ_date_epoch',
-        'job_info_alt_cmb_ed_oth_yrs',
-        'job_info_alt_occ_num_months',
-        'job_info_experience_num_months',
-        'pw_amount_9089',
-] + [colname + '_epoch' for colname in ['ri_campus_placement_to',
+date_colnames = [colname + '_epoch' for colname in [
+    'case_received_date_epoch',
+    'decision_date_epoch',
+    'pw_expire_date_epoch',
+    'pw_determ_date_epoch',    
+    'ri_campus_placement_to',
     'recr_info_job_fair_from',
     'ri_pvt_employment_firm_from',
     'ri_local_ethnic_paper_to',
@@ -102,6 +94,17 @@ selected_feature_names_interval = [
     'recr_info_second_ad_start',
     'pw_expire_date'
      ]]
+
+selected_feature_names_interval = [
+##         'wage_offer_from_9089',   
+        'naics_code',
+        'employer_num_employees',
+##         'employer_yr_estab',
+        'job_info_alt_cmb_ed_oth_yrs',
+        'job_info_alt_occ_num_months',
+        'job_info_experience_num_months',
+        'pw_amount_9089',
+] + date_colnames
 
 if __name__ == "__main__":
     from load_dataset import load_and_preprocess

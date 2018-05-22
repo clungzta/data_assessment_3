@@ -87,12 +87,15 @@ def load_and_preprocess(path, fuzzy_matching=True):
 
     df['job_info_work_city'] = df['job_info_work_city'].map(lambda x: x.lower() if type(x) == str else x)
     df['agent_city'] = df['agent_city'].map(lambda x: x.lower() if type(x) == str else x)
+    df['employer_name'] = df['employer_name'].map(lambda x: x.lower() if type(x) == str else x)
     df['foreign_worker_info_city'] = df['foreign_worker_info_city'].map(lambda x: x.lower() if type(x) == str else x)
     df['preparer_info_title'] = df['preparer_info_title'].map(lambda x: x.lower() if type(x) == str else x)
     df['fw_info_birth_country'] = df['fw_info_birth_country'].map(lambda x: x.lower() if type(x) == str else x)
     df['ri_1st_ad_newspaper_name'] = df['ri_1st_ad_newspaper_name'].map(lambda x: x.lower() if type(x) == str else x)
     df['ri_2nd_ad_newspaper_name'] = df['ri_2nd_ad_newspaper_name'].map(lambda x: x.lower() if type(x) == str else x)
-    df['agent_city'] = df['agent_city'].map(lambda x: x.lower() if type(x) == str else x)
+    df['employer_city'] = df['employer_city'].map(lambda x: x.lower() if type(x) == str else x)
+    df['foreign_worker_info_inst'] = df['foreign_worker_info_inst'].map(lambda x: x.lower() if type(x) == str else x)
+    df['foreign_worker_info_major'] = df['foreign_worker_info_major'].map(lambda x: x.lower() if type(x) == str else x)
 #     df['pw_job_title_908']
 # pw_soc_title,
 # pw_source_name_9089,

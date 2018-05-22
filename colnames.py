@@ -68,10 +68,10 @@ selected_feature_names_categ = [
 ]
 
 date_colnames = [colname + '_epoch' for colname in [
-    'case_received_date_epoch',
-    'decision_date_epoch',
-    'pw_expire_date_epoch',
-    'pw_determ_date_epoch',    
+    'case_received_date',
+    'decision_date',
+    'pw_expire_date',
+    'pw_determ_date',    
     'ri_campus_placement_to',
     'recr_info_job_fair_from',
     'ri_pvt_employment_firm_from',

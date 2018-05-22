@@ -83,7 +83,73 @@ def load_and_preprocess(path, fuzzy_matching=True):
     else:
         df['agent_firm_name_modified'] = df['agent_firm_name']
 
-    df['agent_state_abbr'] = df.agent_firm_name.map(lambda x: x.lower().replace(',', '').replace('.', '') if (type(x) == str) else x)
+#     df['agent_state_abbr'] = df.agent_firm_name.map(lambda x: x.lower().replace(',', '').replace('.', '') if (type(x) == str) else x)
+
+    df['job_info_work_city'] = df['job_info_work_city'].map(lambda x: x.lower() if type(x) == str else x)
+    df['agent_city'] = df['agent_city'].map(lambda x: x.lower() if type(x) == str else x)
+    df['foreign_worker_info_city'] = df['foreign_worker_info_city'].map(lambda x: x.lower() if type(x) == str else x)
+    df['preparer_info_title'] = df['preparer_info_title'].map(lambda x: x.lower() if type(x) == str else x)
+    df['fw_info_birth_country'] = df['fw_info_birth_country'].map(lambda x: x.lower() if type(x) == str else x)
+    df['ri_1st_ad_newspaper_name'] = df['ri_1st_ad_newspaper_name'].map(lambda x: x.lower() if type(x) == str else x)
+    df['ri_2nd_ad_newspaper_name'] = df['ri_2nd_ad_newspaper_name'].map(lambda x: x.lower() if type(x) == str else x)
+    df['agent_city'] = df['agent_city'].map(lambda x: x.lower() if type(x) == str else x)
+#     df['pw_job_title_908']
+# pw_soc_title,
+# pw_source_name_9089,
+# preparer_info_emp_completed,
+# employer_name,
+# job_info_work_postal_code,
+# fw_info_training_comp,
+# fw_info_req_experience,
+# ri_posted_notice_at_worksite,
+# ri_2nd_ad_newspaper_or_journal,
+# foreign_worker_info_state_abbr,
+# recr_info_sunday_newspaper,
+# num_employees_discrete,
+# fw_info_rel_occup_exp,
+# ji_foreign_worker_live_on_premises,
+# job_info_training,
+# ji_fw_live_on_premises,
+# schd_a_sheepherder,
+# agent_state_abbr
+# employer_state_abbr
+
+# TODO ft embedding
+# job_info_job_title,
+# pw_job_title_9089,
+# naics_title,
+# job_info_alt_occ_job_title,
+# pw_job_title_908,
+# job_info_major,
+
+# numeric
+# job_info_alt_cmb_ed_oth_yrs,
+# job_info_alt_occ_num_months,
+# job_info_experience_num_months,
+# pw_amount_9089,
+
+    # dates
+    dates = ['ri_campus_placement_to',
+    'recr_info_job_fair_from',
+    'ri_pvt_employment_firm_from',
+    'ri_local_ethnic_paper_to',
+    'ri_job_search_website_from',
+    'recr_info_pro_org_advert_to',
+    'recr_info_swa_job_order_end',
+    'ri_employee_referral_prog_to',
+    'ri_pvt_employment_firm_to',
+    'recr_info_swa_job_order_start',
+    'ri_job_search_website_to',
+    'recr_info_prof_org_advert_to',
+    'recr_info_first_ad_start',
+    'ri_employee_referral_prog_from',
+    'ri_local_ethnic_paper_from',
+    'ri_employer_web_post_to',
+    'ri_campus_placement_from',
+    'recr_info_radio_tv_ad_from',
+    'recr_info_prof_org_advert_from',
+    'recr_info_second_ad_start',
+    'pw_expire_date']
 
     print_attr_overview(df['case_status'], True, topn=10)
 
@@ -104,17 +170,26 @@ def load_and_preprocess(path, fuzzy_matching=True):
     s = s.map(lambda x: us_state_abbrev[x] if (type(x) == str and (x.strip() in us_state_abbrev)) else x)
     s = s.map(lambda x: x.upper() if type(x) == str else x)
     df['job_info_work_state_abbr'] = s
+    
+    s = df['foreign_worker_info_state']
+    s = s.map(lambda x: x.lower() if type(x) == str else x)
+    s = s.map(lambda x: us_state_abbrev[x] if (type(x) == str and (x.strip() in us_state_abbrev)) else x)
+    s = s.map(lambda x: x.upper() if type(x) == str else x)
+    df['foreign_worker_info_state_abbr'] = s
 
     print(df.agent_state_abbr.value_counts())
     print(df.employer_state_abbr.value_counts())
     print(df.job_info_work_state_abbr.value_counts())
     # exit()
 
-    df['case_received_date_epoch'] = pd.to_datetime(df.case_received_date, errors='coerce').astype(np.int64) // 10**9
-    df['decision_date_epoch'] = pd.to_datetime(df.decision_date, errors='coerce').astype(np.int64) // 10**9
-    df['pw_determ_date_epoch'] = pd.to_datetime(df.pw_determ_date, errors='coerce').astype(np.int64) // 10**9
-    df['pw_expire_date_epoch'] = pd.to_datetime(df.pw_expire_date, errors='coerce').astype(np.int64) // 10**9
+#     df['case_received_date_epoch'] = pd.to_datetime(df.case_received_date, errors='coerce').astype(np.int64) // 10**9
+#     df['decision_date_epoch'] = pd.to_datetime(df.decision_date, errors='coerce').astype(np.int64) // 10**9
+#     df['pw_determ_date_epoch'] = pd.to_datetime(df.pw_determ_date, errors='coerce').astype(np.int64) // 10**9
+#     df['pw_expire_date_epoch'] = pd.to_datetime(df.pw_expire_date, errors='coerce').astype(np.int64) // 10**9
 
+    for feature_name in dates:
+        df[feature_name + '_epoch'] = pd.to_datetime(df[feature_name], errors='coerce').astype(np.int64) // 10**9
+    
     # colnames = ['naics_code']
     df['naics_code'][df['naics_us_code'].notnull()] = df['naics_us_code']
 

@@ -191,6 +191,7 @@ def load_and_preprocess(path, fuzzy_matching=False):
 #     df['pw_expire_date_epoch'] = pd.to_datetime(df.pw_expire_date, errors='coerce').astype(np.int64) // 10**9
 
     for feature_name in dates:
+        print('preprocessing {}'.format(feature_name))
         df[feature_name + '_epoch'] = pd.to_datetime(df[feature_name], errors='coerce').astype(np.int64) // 10**9
     
     # colnames = ['naics_code']

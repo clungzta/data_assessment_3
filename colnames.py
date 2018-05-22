@@ -55,3 +55,27 @@ selected_feature_names_interval = [
         'pw_determ_date_epoch',
         'foreign_worker_yr_rel_edu_completed',
 ]
+
+dates = ['ri_campus_placement_to',
+    'recr_info_job_fair_from',
+    'ri_pvt_employment_firm_from',
+    'ri_local_ethnic_paper_to',
+    'ri_job_search_website_from',
+    'recr_info_pro_org_advert_to',
+    'recr_info_swa_job_order_end',
+    'ri_employee_referral_prog_to',
+    'ri_pvt_employment_firm_to',
+    'recr_info_swa_job_order_start',
+    'ri_job_search_website_to',
+    'recr_info_prof_org_advert_to',
+    'recr_info_first_ad_start',
+    'ri_employee_referral_prog_from',
+    'ri_local_ethnic_paper_from',
+    'ri_employer_web_post_to',
+    'ri_campus_placement_from',
+    'recr_info_radio_tv_ad_from',
+    'recr_info_prof_org_advert_from',
+    'recr_info_second_ad_start',
+    'pw_expire_date']
+
+selected_feature_names_interval += [colname + '_epoch' for colname in dates]

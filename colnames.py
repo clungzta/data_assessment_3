@@ -55,3 +55,13 @@ selected_feature_names_interval = [
         'pw_determ_date_epoch',
         'foreign_worker_yr_rel_edu_completed',
 ]
+
+if __name__ == "__main__":
+    from load_dataset import load_and_preprocess
+
+    df = load_and_preprocess('TrainingSet(3).csv')    
+    used_features = selected_feature_names_categ + selected_feature_names_interval
+
+    for colname in list(set(df.keys()) - set(used_features)):
+        print(df[colname])
+    

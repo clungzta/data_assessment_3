@@ -44,7 +44,7 @@ def eval_fun(colnames, bits):
     else:
         data = []
 
-    with open('checkpoint.pkl', 'wb') as flo:
+    with open('checkpoints.pkl', 'wb') as flo:
         print('Saving checkpoint')
         data.append((score, zip(colnames, bits), l, datetime.utcnow()))
         pickle.dump(data, flo, pickle.HIGHEST_PROTOCOL)
@@ -61,11 +61,11 @@ if __name__ == '__main__':
     data.extend(selected_feature_names_interval)
 
     pbil_params = {
-        'learn_rate': 0.05,
-        'neg_learn_rate': 0.05,
-        'pop_size': 15,
-        'num_best_vec_to_update_from': 2,
-        'num_worst_vec_to_update_from': 2,
+        'learn_rate': 0.02,
+        'neg_learn_rate': 0.02,
+        'pop_size': 20,
+        'num_best_vec_to_update_from': 4,
+        'num_worst_vec_to_update_from': 4,
         'vec_len': len(data),
         'optimisation_cycles': 8, # PBIL n_epochs
         'eval_f': functools.partial(eval_fun, data),

@@ -20,9 +20,8 @@ from sklearn.model_selection import train_test_split
 
 from us_state_abbrev import us_state_abbrev
 
-# employer_sizes = [0, 10, 100, 2000, 20000]
-# employer_size_labels = ['Startup', 'Small_Scale',
-#                         'Medium_Scale', 'Large_Scale', 'Giant_Scale']
+employer_sizes = [0, 5, 10, 50, 100, 2000, 20000, 100000]
+employer_size_labels = ['pico', 'nano', 'micro', 'milli', 'medium', 'kilo', 'mega' 'giga']
 
 def min_max_norm(s):
     return (s - np.min(s)) / (np.max(s) - np.min(s))
@@ -75,11 +74,11 @@ def load_and_preprocess(path, fuzzy_matching=True):
 
     # FIXME
     if fuzzy_matching:
-        df['employer_name_modified'] = df.employer_name.map(lambda x: re.sub(r'([^\s\w]|_)+', '', x.lower()) if (type(x) == str) else x)
-        df['agent_firm_name_modified'] = df.agent_firm_name.map(lambda x: re.sub(r'([^\s\w]|_)+', '', x.lower()) if (type(x) == str) else x)
-        # df['agent_firm_name_modified'] = fuzzy_match_and_combine(df.agent_firm_name_modified, 94)
+        # df['employer_name_modified'] = df.employer_name.map(lambda x: re.sub(r'([^\s\w]|_)+', '', x.lower()) if (type(x) == str) else x)
+        # df['agent_firm_name_modified'] = df.agent_firm_name.map(lambda x: re.sub(r'([^\s\w]|_)+', '', x.lower()) if (type(x) == str) else x)
+        df['agent_firm_name_modified'] = fuzzy_match_and_combine(df.agent_firm_name_modified, 94)
 
-        print(df['agent_firm_name_modified'].value_counts())
+        # print(df['agent_firm_name_modified'].value_counts())
         # exit()
     else:
         df['agent_firm_name_modified'] = df['agent_firm_name']

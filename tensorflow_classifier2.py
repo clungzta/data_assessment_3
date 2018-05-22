@@ -18,11 +18,12 @@ def prelu(_x, scope=None):
 
 def train_and_test(df, training_epochs, selected_feature_names_categ, selected_feature_names_interval):
     scores = []
+    tf.reset_default_graph()    
     
     # Parameters
     learning_rate = 0.0001
     #training_epochs = 80
-    batch_size = 200
+    batch_size = 50
     display_step = 1
 
     # TODO: load and preprocess once. Run multiple times using same data
@@ -122,6 +123,7 @@ def train_and_test(df, training_epochs, selected_feature_names_categ, selected_f
 
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
     train_op = optimizer.minimize(loss_op)
+
     # Initializing the variables
     init = tf.global_variables_initializer()
 
@@ -148,7 +150,7 @@ def train_and_test(df, training_epochs, selected_feature_names_categ, selected_f
             if epoch % display_step == 0:
                 print("Epoch:", '%04d' % (epoch + 1), "cost={:.9f}".format(avg_cost))
 
-            if epoch % (display_step*5) == 0:
+            if epoch % (display_step*4) == 0:
                 scores.append(test(sess, report=True))
 
         print("Optimisation Finished!")

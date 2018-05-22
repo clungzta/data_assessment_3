@@ -132,7 +132,12 @@ def load_and_preprocess(path, fuzzy_matching=False):
 # pw_amount_9089,
 
     # dates
-    dates = ['ri_campus_placement_to',
+    dates = [
+    'case_received_date',
+    'decision_date',
+    'pw_determ_date',
+    'pw_expire_date',
+    'ri_campus_placement_to',
     'recr_info_job_fair_from',
     'ri_pvt_employment_firm_from',
     'ri_local_ethnic_paper_to',

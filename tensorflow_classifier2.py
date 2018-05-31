@@ -40,9 +40,9 @@ def train_and_test(df, training_epochs, selected_feature_names_categ, selected_f
     print('vocab size:', vocab_size)
 
     # Network Parameters
-    embedding_size = 50
-    n_hidden_1 = 5000  # 1st layer number of neurons, 300, try 2048
-    n_hidden_2 = 5000  # 2nd layer number of neurons
+    embedding_size = 40
+    n_hidden_1 = 2500  # 1st layer number of neurons, 300, try 2048
+    n_hidden_2 = 1500   # 2nd layer number of neurons
     # n_hidden_2 = None  # 2nd layer number of neurons
     n_classes = len(np.unique(train_y))  # number total classes
 
@@ -166,4 +166,4 @@ def train_and_test(df, training_epochs, selected_feature_names_categ, selected_f
 
 if __name__ == '__main__':
     df = load_and_preprocess('TrainingSet(3).csv')
-    score = train_and_test(df, 50, selected_feature_names_categ, selected_feature_names_interval)
+    score = train_and_test(df, 1500, selected_feature_names_categ, selected_feature_names_interval)

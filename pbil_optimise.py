@@ -67,7 +67,7 @@ if __name__ == '__main__':
         'num_best_vec_to_update_from': 4,
         'num_worst_vec_to_update_from': 4,
         'vec_len': len(data),
-        'optimisation_cycles': 8, # PBIL n_epochs
+        'optimisation_cycles': 20, # PBIL n_epochs
         'eval_f': functools.partial(eval_fun, data),
         'vec_storage': l,
     }

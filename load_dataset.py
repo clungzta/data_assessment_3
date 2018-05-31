@@ -63,7 +63,7 @@ def fuzzy_match_and_combine(s, min_ratio=90):
 
     return s_filtered.map(lambda x: fuzzy_mapping[x] if (type(x) == str and (x in fuzzy_mapping)) else x)
 
-def load_and_preprocess(path, fuzzy_matching=False):
+def load_and_preprocess(path, fuzzy_matching=True):
     # df_test = pd.read_csv('TestingSet_Random(1).csv')
     # df_test2 = pd.read_csv('TestingSet(2).csv')
     df = pd.read_csv(path)
@@ -252,6 +252,9 @@ def extract_features(df, selected_feature_names_categ, selected_feature_names_in
     variable_types = []
     # exit()
 
+    # Check to ensure all cols exist (avoid keyerrors)
+    df[selected_feature_names_categ + selected_feature_names_interval]
+
     # for feature in selected_feature_names_categ:
     #     le = preprocessing.LabelEncoder()
     #     print(print_attr_overview(df[feature], True, topn=10))
@@ -283,6 +286,9 @@ def extract_features(df, selected_feature_names_categ, selected_feature_names_in
         df[feature + '_encoded'] = le.transform(s)
         features_to_use.append(feature + '_encoded')
         variable_types.append('categorical_nominal')
+        print(feature, np.unique(s))
+        # print()
+    # exit()
 
     # Append interval AFTER categorical!!
     for feature in selected_feature_names_interval:

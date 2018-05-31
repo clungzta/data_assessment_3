@@ -1,18 +1,27 @@
 import re
 import csv
+import time
+# import pickle
 import os, sys
 import itertools
 from utils import *
 import numpy as np
 import pandas as pd
+from numba import jit
 import seaborn as sns
 from scipy import stats
+import cPickle as pickle
 from fuzzywuzzy import fuzz
 from termcolor import cprint
 from collections import Counter
 import matplotlib.pyplot as plt
 from pprint import pprint, pformat
+from colnames import date_colnames
 
+# fuzz is used to compare TWO strings
+from fuzzywuzzy import fuzz
+# process is used to compare a string to MULTIPLE other strings
+from fuzzywuzzy import process
 
 from sklearn import preprocessing
 from sklearn.utils import shuffle as skl_shuffle
@@ -39,15 +48,59 @@ def discretise_employer_size(value):
     # print(out_label)
     return out_label
 
+# @jit
+# def find_possible(possibilities, min_ratio):
+    
+#     output = []
+#     for item, score in possibilities:
+#         if score > min_ratio:
+#             output.append((item, score))
+
+#     return output
+        
+
 def fuzzy_match_and_combine(s, min_ratio=90):
-    s = s.map(lambda x: x.upper() if type(x) == str else x)
+    s = s.map(lambda x: x.upper().replace('.', '').replace(',', '').replace(' AND ', ' & ') if type(x) == str else x)
     s_filtered = s.copy()
 
-    firm_names = list(set([str(i) for i in s.tolist()]))
-    fuzzy_mapping = {}
+    try:
+        with open(s.name + '_fuzz.pkl', 'rb') as f:
+            fuzzy_mapping = pickle.load(f)
+    except IOError as e:
+        print(e)
+        fuzzy_mapping = {}
 
+    cprint('Loaded {}'.format(len(fuzzy_mapping.keys())), 'white', 'on_magenta')
+
+    # items = []
+    # for item in s.tolist():
+    #     try:
+    #         items.append(str(item).encode())
+    #     except Exception as e:
+    #         print(e)
+
+    # items = [str(i) for i in ]
+    # print(len(items))
+    # counts = Counter(items)
+
+    firm_names_unmapped = list(set([str(i) for i in s.tolist()]) - set(fuzzy_mapping.keys()))
+    # fuzzy_mapping = {}
+
+    # unique_items = list(set(items))
+
+    # fuzz_mapping = {}
+    # for item in unique_items:
+    #     possibilities = process.extractWithoutOrder(item, unique_items, scorer=fuzz.ratio)
+    #     start = time.time()
+    #     possible = [possible for possible in possibilities if possible[1] > min_ratio]
+    #     print(time.time() - start)
+    #     match, sim = sorted(possible, key=lambda x: counts[x[0]], reverse=True)[0]
+    #     print(item, match, sim)
+    #     fuzz_mapping[item] = match
+
+    ############################## UNCOMMENT FOR INFERENCE ##########################
     match_count = 0
-    for name1, name2 in itertools.combinations(firm_names, 2):
+    for name1, name2 in itertools.combinations(firm_names_unmapped, 2):
         ratio = fuzz.ratio(name1, name2)
     #     ratio = SequenceMatcher(None, "abcd", "bcde")
 
@@ -60,6 +113,14 @@ def fuzzy_match_and_combine(s, min_ratio=90):
                 fuzzy_mapping[name2] = name1
             else:
                 fuzzy_mapping[name1] = name2
+        else:
+            # If no match, name maps to itself
+            fuzzy_mapping[name1] = name1
+    #################################################################################
+
+    with open(s.name + '_fuzz.pkl', 'wb') as f:
+        print('saving pkl')
+        pickle.dump(fuzzy_mapping, f)
 
     return s_filtered.map(lambda x: fuzzy_mapping[x] if (type(x) == str and (x in fuzzy_mapping)) else x)
 
@@ -69,14 +130,14 @@ def load_and_preprocess(path, fuzzy_matching=True):
     df = pd.read_csv(path)
 
     print(len(df.index))
-    print(list(df))
+    # print(list(df))
     # print(df['case_status'])
 
     # FIXME
     if fuzzy_matching:
         # df['employer_name_modified'] = df.employer_name.map(lambda x: re.sub(r'([^\s\w]|_)+', '', x.lower()) if (type(x) == str) else x)
         # df['agent_firm_name_modified'] = df.agent_firm_name.map(lambda x: re.sub(r'([^\s\w]|_)+', '', x.lower()) if (type(x) == str) else x)
-       df['agent_firm_name_modified'] = fuzzy_match_and_combine(df.agent_firm_name, 94)
+       df['agent_firm_name_modified'] = fuzzy_match_and_combine(df.agent_firm_name, 91)
 
         # print(df['agent_firm_name_modified'].value_counts())
         # exit()
@@ -131,34 +192,6 @@ def load_and_preprocess(path, fuzzy_matching=True):
 # job_info_experience_num_months,
 # pw_amount_9089,
 
-    # dates
-    dates = [
-    'case_received_date',
-    'decision_date',
-    'pw_determ_date',
-    'pw_expire_date',
-    'ri_campus_placement_to',
-    'recr_info_job_fair_from',
-    'ri_pvt_employment_firm_from',
-    'ri_local_ethnic_paper_to',
-    'ri_job_search_website_from',
-    'recr_info_pro_org_advert_to',
-    'recr_info_swa_job_order_end',
-    'ri_employee_referral_prog_to',
-    'ri_pvt_employment_firm_to',
-    'recr_info_swa_job_order_start',
-    'ri_job_search_website_to',
-    'recr_info_prof_org_advert_to',
-    'recr_info_first_ad_start',
-    'ri_employee_referral_prog_from',
-    'ri_local_ethnic_paper_from',
-    'ri_employer_web_post_to',
-    'ri_campus_placement_from',
-    'recr_info_radio_tv_ad_from',
-    'recr_info_prof_org_advert_from',
-    'recr_info_second_ad_start',
-    'pw_expire_date']
-
     print_attr_overview(df['case_status'], True, topn=10)
 
     s = df['employer_state']
@@ -185,9 +218,9 @@ def load_and_preprocess(path, fuzzy_matching=True):
     s = s.map(lambda x: x.upper() if type(x) == str else x)
     df['foreign_worker_info_state_abbr'] = s
 
-    print(df.agent_state_abbr.value_counts())
-    print(df.employer_state_abbr.value_counts())
-    print(df.job_info_work_state_abbr.value_counts())
+    # print(df.agent_state_abbr.value_counts())
+    # print(df.employer_state_abbr.value_counts())
+    # print(df.job_info_work_state_abbr.value_counts())
     # exit()
 
 #     df['case_received_date_epoch'] = pd.to_datetime(df.case_received_date, errors='coerce').astype(np.int64) // 10**9
@@ -195,7 +228,9 @@ def load_and_preprocess(path, fuzzy_matching=True):
 #     df['pw_determ_date_epoch'] = pd.to_datetime(df.pw_determ_date, errors='coerce').astype(np.int64) // 10**9
 #     df['pw_expire_date_epoch'] = pd.to_datetime(df.pw_expire_date, errors='coerce').astype(np.int64) // 10**9
 
-    for feature_name in dates:
+    date_cols = [s.replace('_epoch', '') for s in date_colnames]
+
+    for feature_name in date_cols:
         print('preprocessing {}'.format(feature_name))
         df[feature_name + '_epoch'] = pd.to_datetime(df[feature_name], errors='coerce').astype(np.int64) // 10**9
     
@@ -268,6 +303,11 @@ def extract_features(df, selected_feature_names_categ, selected_feature_names_in
         # print(print_attr_overview(df[feature], True, topn=10))
         
         s = df[feature]
+
+        # Remove categorical entries with less than 10 occurances
+        a = s.value_counts()
+        s[s.isin(a.index[a < 12])] = np.nan
+
         s[s.isnull()] = "EMPTY_PLACEHOLDER"
         s = s.map(lambda x: x.lower() if type(x) == str else x)
         # print(np.unique(df[feature]))
@@ -286,7 +326,7 @@ def extract_features(df, selected_feature_names_categ, selected_feature_names_in
         df[feature + '_encoded'] = le.transform(s)
         features_to_use.append(feature + '_encoded')
         variable_types.append('categorical_nominal')
-        print(feature, np.unique(s))
+        print(feature, len(np.unique(s)))
         # print()
     # exit()
 
@@ -294,7 +334,7 @@ def extract_features(df, selected_feature_names_categ, selected_feature_names_in
     for feature in selected_feature_names_interval:
         s = df[feature]
         s = s.map(lambda x: x.replace(',', '') if type(x) == str else x)
-        print(s)
+        # print(s)
         s = pd.to_numeric(s, errors='coerce')
         s[np.logical_not(s.notnull())] = 0.0
         newname = feature + '_normed'

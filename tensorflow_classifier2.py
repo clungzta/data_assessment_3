@@ -21,9 +21,9 @@ def train_and_test(df, training_epochs, selected_feature_names_categ, selected_f
     tf.reset_default_graph()    
     
     # Parameters
-    learning_rate = 0.0001
+    learning_rate = 0.0001 #0.0001
     #training_epochs = 80
-    batch_size = 50
+    batch_size = 75
     display_step = 1
 
     # TODO: load and preprocess once. Run multiple times using same data
@@ -40,9 +40,9 @@ def train_and_test(df, training_epochs, selected_feature_names_categ, selected_f
     print('vocab size:', vocab_size)
 
     # Network Parameters
-    embedding_size = 40
-    n_hidden_1 = 2500  # 1st layer number of neurons, 300, try 2048
-    n_hidden_2 = 1500   # 2nd layer number of neurons
+    embedding_size = 20 #40
+    n_hidden_1 = 1500  # 1st layer number of neurons, 300, try 2048, #2500
+    n_hidden_2 = 1500  # 2nd layer number of neurons, #1500
     # n_hidden_2 = None  # 2nd layer number of neurons
     n_classes = len(np.unique(train_y))  # number total classes
 
@@ -108,7 +108,7 @@ def train_and_test(df, training_epochs, selected_feature_names_categ, selected_f
         # print(y_pred)
 
         if report:
-            target_names = ['class 0', 'certified', 'class 2', 'class 3']
+            target_names = ['class 0', 'class 1', 'class 2', 'class 3']
             print(classification_report(test_y, y_pred, target_names=target_names))
 
         return f1_score(test_y, y_pred, average='micro')
@@ -117,7 +117,9 @@ def train_and_test(df, training_epochs, selected_feature_names_categ, selected_f
     # loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=multilayer_perceptron(X, 0.4), labels=Y))
     # Sparse softmax supports index labels ()
     loss_cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=Y))
+    # lossL1 = tf.add_n([tf.nn.l1_loss(v) for v in tf.trainable_variables() if 'bias' not in v.name]) * 0.001
     lossL2 = tf.add_n([tf.nn.l2_loss(v) for v in tf.trainable_variables() if 'bias' not in v.name]) * 0.001
+    # lossL2 = tf.add_n([tf.nn.l2_loss(v) for v in tf.trainable_variables() if 'bias' not in v.name]) * 0.0005
 
     loss_op = loss_cross_entropy + lossL2
 
@@ -165,5 +167,6 @@ def train_and_test(df, training_epochs, selected_feature_names_categ, selected_f
         return max(scores)
 
 if __name__ == '__main__':
+    cprint('STARTING', 'white', 'on_green')
     df = load_and_preprocess('TrainingSet(3).csv')
-    score = train_and_test(df, 1500, selected_feature_names_categ, selected_feature_names_interval)
+    score = train_and_test(df, 110, selected_feature_names_categ, selected_feature_names_interval)

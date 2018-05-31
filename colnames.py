@@ -42,7 +42,7 @@ selected_feature_names_categ = [
     'recr_info_professional_occ',
     'foreign_worker_info_rel_occup_exp',
     ###'foreign_worker_info_req_experience',
-    'job_info_work_state',
+    ###'job_info_work_state',
 ##     'pw_level_9089',
     # wage_offer_from_9089
     # wage_offer_to_9089
@@ -66,8 +66,8 @@ selected_feature_names_categ = [
     'schd_a_sheepherder',
     ###'agent_state_abbr',
     'employer_state_abbr',
-    'ri_1st_ad_newspaper_name',
-    'ri_2nd_ad_newspaper_name'
+    # 'ri_1st_ad_newspaper_name',
+    # 'ri_2nd_ad_newspaper_name'
 ]
 
 date_colnames = [colname + '_epoch' for colname in [
@@ -92,10 +92,10 @@ date_colnames = [colname + '_epoch' for colname in [
     ###'ri_local_ethnic_paper_from',
     ###'ri_employer_web_post_to',
     ###'ri_campus_placement_from',
-    'recr_info_radio_tv_ad_from',
-    'recr_info_prof_org_advert_from',
+    # 'recr_info_radio_tv_ad_from',
+    # 'recr_info_prof_org_advert_from',
     'recr_info_second_ad_start',
-    'pw_expire_date'
+    # 'pw_expire_date'
      ]]
 
 selected_feature_names_interval = [

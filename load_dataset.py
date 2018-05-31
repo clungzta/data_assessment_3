@@ -306,7 +306,7 @@ def extract_features(df, selected_feature_names_categ, selected_feature_names_in
 
         # Remove categorical entries with less than 10 occurances
         a = s.value_counts()
-        s[s.isin(a.index[a < 12])] = np.nan
+        s[s.isin(a.index[a < 16])] = np.nan
 
         s[s.isnull()] = "EMPTY_PLACEHOLDER"
         s = s.map(lambda x: x.lower() if type(x) == str else x)

@@ -1,7 +1,7 @@
 ## first removal
 ### second removal
 
-selected_feature_names_categ = [
+colnames_categ = [
     'country_of_citizenship', #FIXME
     ###'foreign_worker_info_education',
     'employer_state_abbr',
@@ -98,7 +98,7 @@ date_colnames = [colname + '_epoch' for colname in [
     # 'pw_expire_date'
      ]]
 
-selected_feature_names_interval = [
+colnames_interval = [
 ##         'wage_offer_from_9089',   
 ###        'naics_code',
         'employer_num_employees',
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     from load_dataset import load_and_preprocess
 
     df = load_and_preprocess('TrainingSet(3).csv')
-    used_features = selected_feature_names_categ + selected_feature_names_interval
+    used_features = colnames_categ + colnames_interval
 
     for colname in list(set(df.keys()) - set(used_features)):
         print(df[colname])
